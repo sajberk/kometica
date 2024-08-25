@@ -1,83 +1,38 @@
 import geom
 import numpy as np
-import sys
+from sys import exit
 from visualization import plot_simulation
 import kdtree
 from numpy.random import default_rng
 
-def generate_triplets(seed, size, r1, r2):
-    rng = default_rng(seed)
-    triplets = np.empty((size, 3))
 
-    for i in range(size):
-        while True:
-            r = (r1**3 * rng.random())**(1/3)
-            if r < r2:
-                continue
-            theta = rng.uniform(0, 2 * np.pi)
-            phi = np.arccos(2 * rng.random() - 1)
-            x = r * np.sin(phi) * np.cos(theta)
-            y = r * np.sin(phi) * np.sin(theta)
-            z = r * np.cos(phi)
-            
-            triplets[i] = [x, y, z]
-            break
-    
-    return triplets
-
-##ulazni podaci
-#koordinatni sistem u metrima
-n = 1e4 #broj cestica
-max_distance = 50e3
+num_of_particles = int(1e7) #broj cestica
+cloud_radius = 50e3
+nucleus_radius = 2e3
 
 star_coords = [-12222, 555, 111]
 obs_coords = [0, 0, 0]
-obs_view_vec = [125510, 125770, -15920]
+obs_view_vec = [125515, 125774, -15921]
 comet_coords = [125510, 125770, -15920]
 comet_radius = 3000
 
 # transformacije
 comet_coords, star_coords, obs_coords, obs_view_vec = geom.translate_points(comet_coords, star_coords, obs_coords, obs_view_vec)
 star_coords, obs_coords, obs_view_vec = geom.rotate_to_negative_x_axis(star_coords, obs_coords, obs_view_vec)
-
-#izlaz
-column_density = 0
-note = "neinicijalizovano"
-
+ray = geom.Ray(obs_coords, obs_view_vec)
 
 #ovde umetni transformacije tkd kometa bude u (0 0 0) a zvezdica na negativnom delu x ose 
-#potrebne dve translacije, jedna u y-z ravni (da bi se dovela zvezda u x-y ravan) i jedna u x-y ravni da se dovede na x osu 
-
-
-
-ray = geom.Ray(obs_coords, obs_view_vec)
+#potrebne dve rotacije, jedna u y-z ravni (da bi se dovela zvezda u x-y ravan) i jedna u x-y ravni da se dovede na x osu 
 #Finding parameter limits
 #tj samo gledamo jel prolazimo celu max_dist sferu ili idemo od max_dist do kometice
-
-intersections_max_dist = ray.sphere_intersection(comet_coords, max_distance)
-if(isinstance(intersections_max_dist, float) and np.isnan(intersections_max_dist)):
-    note = "Nema preseka sa max_dist sferom"
-    print("U ovom trenutku kod treba da umre ali nisam stavio sys.exit da bi mogli testici na kraju da prodju, ovo je strahovito odvratno i treba biti napravljeno lepse :lmao:")
-    #sys.exit(1)
-else:
-    t_min, t_max = intersections_max_dist
-
-intersections_comet = ray.sphere_intersection(comet_coords, comet_radius)
-if(isinstance(intersections_comet, float) and np.isnan(intersections_comet)):
-    #nema preseka sa kometicom ali ako smo vec presekli max_dist sferu onda nas nije ni briga
-    pass
-else:
-    t_max = intersections_comet[0]
-
-
 # KD BLEJA ############
 
 # dummy tačke, biće ih milijardu al generisemo drvo
-generated_points = kdtree.generate_points_around_center(comet_coords, max_distance, int(n))
+seed = 1245780
+generated_points = kdtree.generate_triplets(num_of_particles, cloud_radius, nucleus_radius, seed)
 sphere_tree = kdtree.SphereKDTree(points=generated_points)
 
-ray = geom.Ray(obs_coords, obs_view_vec)
-intersections = ray.sphere_intersection(comet_coords, max_distance)
+intersections = ray.sphere_intersection(comet_coords, cloud_radius)
 if(isinstance(intersections, float) and np.isnan(intersections)):
     print(":(")
     exit()
@@ -90,9 +45,9 @@ intersection_length = np.linalg.norm((ray.parametric(intersections[0]), ray.para
 points_on_the_vector_to_sample = np.linspace(ray.parametric(intersections[0]), ray.parametric(intersections[1]), int(intersection_length/2))
 
 
-r = 1 # oko svake od tačaka na vektoru pogleda
+r = 30 # oko svake od tačaka na vektoru pogleda
 results = sphere_tree.query(points_on_the_vector_to_sample, r)
-
+print(results)
 exit()
 ############ KD BLEJA ###########
 

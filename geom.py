@@ -2,8 +2,12 @@ import numpy as np
 
 class Ray:
     def __init__(self, start, vec):
-        self.start = np.array(start)
-        self.vec = np.array(vec)
+        vec_tmp = []
+        for v in vec:
+            vec_tmp.append(np.float128(v))
+        start_tmp = np.float128(start)
+        self.start = start_tmp
+        self.vec = np.array(vec_tmp)
         
     def parametric(self, t):
         return self.start + t*self.vec
@@ -15,6 +19,7 @@ class Ray:
         C = (self.start[0] - center[0])**2 + (self.start[1] - center[1])**2 + (self.start[2] - center[2])**2 - radius**2
         discriminant = B**2 - 4*A*C
         
+        print(A, B, C, discriminant)
         if(discriminant <= 0):
             return np.nan
         else:

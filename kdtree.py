@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.spatial import KDTree
+from numpy.random import default_rng
 
 class SphereKDTree:
     def __init__(self, points):
@@ -11,7 +12,7 @@ class SphereKDTree:
         self.tree = KDTree(self.points)
 
     def query(self, point, radius):
-        res = self.tree.query_ball_point(point, radius)
+        res = self.tree.query_ball_point(point, radius, workers = -1)
         count = 0
         for r in res:
             count += len(r)
@@ -32,3 +33,23 @@ def generate_points_around_center(center, r, n):
         points.append(point)
 
     return points
+
+def generate_triplets(size, r1, r2, seed = 1234):
+    rng = default_rng(seed)
+    triplets = np.empty((size, 3))
+
+    for i in range(size):
+        while True:
+            r = (r1**3 * rng.random())**(1/3)
+            if r < r2:
+                continue
+            theta = rng.uniform(0, 2 * np.pi)
+            phi = np.arccos(2 * rng.random() - 1)
+            x = r * np.sin(phi) * np.cos(theta)
+            y = r * np.sin(phi) * np.sin(theta)
+            z = r * np.cos(phi)
+            
+            triplets[i] = [x, y, z]
+            break
+    
+    return triplets
