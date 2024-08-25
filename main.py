@@ -2,25 +2,23 @@ import geom
 import numpy as np
 import sys
 from visualization import plot_simulation
+import kdtree
 
 ##ulazni podaci
 #koordinatni sistem u metrima
-n = 1e9 #broj cestica
+n = 1e4 #broj cestica
 max_distance = 50e3
 
 star_coords = [-12222, 555, 111]
 obs_coords = [0, 0, 0]
-obs_view_vec = [115300, 116760, -35930]
-comet_coords = [125510, 125770, -15320]
+obs_view_vec = [125510, 125770, -15920]
+comet_coords = [125510, 125770, -15920]
 comet_radius = 3000
 
-print(obs_view_vec)
-
+# transformacije
 comet_coords, star_coords, obs_coords, obs_view_vec = geom.translate_points(comet_coords, star_coords, obs_coords, obs_view_vec)
-print(obs_view_vec)
 star_coords, obs_coords, obs_view_vec = geom.rotate_to_negative_x_axis(star_coords, obs_coords, obs_view_vec)
-print(obs_view_vec)
-print(obs_view_vec-obs_coords)
+
 #izlaz
 column_density = 0
 note = "neinicijalizovano"
@@ -28,7 +26,6 @@ note = "neinicijalizovano"
 
 #ovde umetni transformacije tkd kometa bude u (0 0 0) a zvezdica na negativnom delu x ose 
 #potrebne dve translacije, jedna u y-z ravni (da bi se dovela zvezda u x-y ravan) i jedna u x-y ravni da se dovede na x osu 
-
 
 
 
@@ -52,10 +49,35 @@ else:
     t_max = intersections_comet[0]
 
 
+# KD BLEJA ############
+
+# dummy tačke, biće ih milijardu al generisemo drvo
+generated_points = kdtree.generate_points_around_center(comet_coords, max_distance, int(n))
+sphere_tree = kdtree.SphereKDTree(points=generated_points)
+
+ray = geom.Ray(obs_coords, obs_view_vec)
+intersections = ray.sphere_intersection(comet_coords, max_distance)
+if(isinstance(intersections, float) and np.isnan(intersections)):
+    print(":(")
+    exit()
+
+# ovo dole ima preseke
+#ray = geom.Ray([0,0,0], [12,12,12])
+#intersections = ray.sphere_intersection([23,12,98], 100)
+
+intersection_length = np.linalg.norm((ray.parametric(intersections[0]), ray.parametric(intersections[1])))
+points_on_the_vector_to_sample = np.linspace(ray.parametric(intersections[0]), ray.parametric(intersections[1]), int(intersection_length/2))
+
+
+r = 1 # oko svake od tačaka na vektoru pogleda
+results = sphere_tree.query(points_on_the_vector_to_sample, r)
+
+exit()
+############ KD BLEJA ###########
 
 
 # da ga vidimo
-plot_simulation(star_coords, obs_coords, obs_view_vec, comet_coords, comet_radius)
+#plot_simulation(star_coords, obs_coords, obs_view_vec, comet_coords, comet_radius)
 
 
 
