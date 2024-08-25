@@ -43,3 +43,32 @@ def translate_points(A, B, C):
     A_prime = (0, 0, 0)
     
     return A_prime, B_prime, C_prime
+
+def rotate_to_negative_x_axis(B, C):
+    Bx, By, Bz = B
+    
+    # oko z ose 
+    theta_z = np.arctan2(By, Bx)
+    Rz = np.array([
+        [np.cos(-theta_z), -np.sin(-theta_z), 0],
+        [np.sin(-theta_z), np.cos(-theta_z), 0],
+        [0, 0, 1]
+    ])
+    
+    B_rotated_z = np.dot(Rz, B)
+    C_rotated_z = np.dot(Rz, C)
+    
+    # oko x ose
+    Bx_rotated_z, _, Bz_rotated_z = B_rotated_z
+    theta_y = np.arctan2(Bz_rotated_z, Bx_rotated_z)
+    theta_y = -(theta_y - np.deg2rad(180))
+    Ry = np.array([
+        [np.cos(-theta_y), 0, np.sin(-theta_y)],
+        [0, 1, 0],
+        [-np.sin(-theta_y), 0, np.cos(-theta_y)]
+    ])
+    
+    B_rotated = np.dot(Ry, B_rotated_z)
+    C_rotated = np.dot(Ry, C_rotated_z)
+    
+    return B_rotated, C_rotated
