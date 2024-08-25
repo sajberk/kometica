@@ -58,7 +58,7 @@ def rotate_to_negative_x_axis(B, C):
     B_rotated_z = np.dot(Rz, B)
     C_rotated_z = np.dot(Rz, C)
     
-    # oko x ose
+    # oko y ose
     Bx_rotated_z, _, Bz_rotated_z = B_rotated_z
     theta_y = np.arctan2(Bz_rotated_z, Bx_rotated_z)
     theta_y = -(theta_y - np.deg2rad(180))
