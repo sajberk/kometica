@@ -2,6 +2,7 @@ import geom
 import numpy as np
 import sys
 from visualization import plot_simulation
+import kdtree
 from numpy.random import default_rng
 
 def generate_triplets(size, r1, r2, seed=12):
@@ -17,7 +18,6 @@ def generate_triplets(size, r1, r2, seed=12):
                 break
     
     return triplets
-import kdtree
 
 ##ulazni podaci
 #koordinatni sistem u metrima
