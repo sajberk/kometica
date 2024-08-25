@@ -1,6 +1,7 @@
 import geom
 import numpy as np
 import sys
+from visualization import plot_simulation
 
 ##ulazni podaci
 #koordinatni sistem u metrima
@@ -9,10 +10,17 @@ max_distance = 50e3
 
 star_coords = [-12222, 555, 111]
 obs_coords = [0, 0, 0]
-obs_view_vec = [1255125, 12577, -1532]
-comet_coords = [1255125, 12577, -1532]
+obs_view_vec = [115300, 116760, -35930]
+comet_coords = [125510, 125770, -15320]
 comet_radius = 3000
 
+print(obs_view_vec)
+
+comet_coords, star_coords, obs_coords, obs_view_vec = geom.translate_points(comet_coords, star_coords, obs_coords, obs_view_vec)
+print(obs_view_vec)
+star_coords, obs_coords, obs_view_vec = geom.rotate_to_negative_x_axis(star_coords, obs_coords, obs_view_vec)
+print(obs_view_vec)
+print(obs_view_vec-obs_coords)
 #izlaz
 column_density = 0
 note = "neinicijalizovano"
@@ -46,10 +54,8 @@ else:
 
 
 
-
-
-
-
+# da ga vidimo
+plot_simulation(star_coords, obs_coords, obs_view_vec, comet_coords, comet_radius)
 
 
 

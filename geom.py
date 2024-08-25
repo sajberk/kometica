@@ -34,17 +34,18 @@ def calculate_angles(x, y, z):
     
     return theta_xy_deg, theta_yz_deg 
 
-def translate_points(A, B, C):
+def translate_points(A, B, C, D):
     #Prva je uvek kometica jer nju teramo u koordinatni centar, B i C su zvezda i posmatrac
     Ax, Ay, Az = A
     B_prime = (B[0] - Ax, B[1] - Ay, B[2] - Az)
     C_prime = (C[0] - Ax, C[1] - Ay, C[2] - Az)
-    
+    D_prime = (D[0] - Ax, D[1] - Ay, D[2] - Az)
+
     A_prime = (0, 0, 0)
     
-    return A_prime, B_prime, C_prime
+    return A_prime, B_prime, C_prime, D_prime
 
-def rotate_to_negative_x_axis(B, C):
+def rotate_to_negative_x_axis(B, C, D):
     Bx, By, Bz = B
     
     # oko z ose 
@@ -57,6 +58,7 @@ def rotate_to_negative_x_axis(B, C):
     
     B_rotated_z = np.dot(Rz, B)
     C_rotated_z = np.dot(Rz, C)
+    D_rotated_z = np.dot(Rz, D)
     
     # oko y ose
     Bx_rotated_z, _, Bz_rotated_z = B_rotated_z
@@ -70,5 +72,6 @@ def rotate_to_negative_x_axis(B, C):
     
     B_rotated = np.dot(Ry, B_rotated_z)
     C_rotated = np.dot(Ry, C_rotated_z)
+    D_rotated = np.dot(Ry, D_rotated_z)
     
-    return B_rotated, C_rotated
+    return B_rotated, C_rotated, D_rotated
