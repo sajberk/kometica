@@ -5,17 +5,23 @@ from visualization import plot_simulation
 import kdtree
 from numpy.random import default_rng
 
-def generate_triplets(size, r1, r2, seed=12):
+def generate_triplets(seed, size, r1, r2):
     rng = default_rng(seed)
     triplets = np.empty((size, 3))
-    
+
     for i in range(size):
         while True:
-            x, y, z = rng.uniform(-r1, r1, size=3)
-            distance_squared = x**2 + y**2 + z**2
-            if r2**2 < distance_squared < r1**2:
-                triplets[i] = [x, y, z]
-                break
+            r = (r1**3 * rng.random())**(1/3)
+            if r < r2:
+                continue
+            theta = rng.uniform(0, 2 * np.pi)
+            phi = np.arccos(2 * rng.random() - 1)
+            x = r * np.sin(phi) * np.cos(theta)
+            y = r * np.sin(phi) * np.sin(theta)
+            z = r * np.cos(phi)
+            
+            triplets[i] = [x, y, z]
+            break
     
     return triplets
 
