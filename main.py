@@ -2,6 +2,21 @@ import geom
 import numpy as np
 import sys
 from visualization import plot_simulation
+from numpy.random import default_rng
+
+def generate_triplets(size, r1, r2, seed=12):
+    rng = default_rng(seed)
+    triplets = np.empty((size, 3))
+    
+    for i in range(size):
+        while True:
+            x, y, z = rng.uniform(-r1, r1, size=3)
+            distance_squared = x**2 + y**2 + z**2
+            if r2**2 < distance_squared < r1**2:
+                triplets[i] = [x, y, z]
+                break
+    
+    return triplets
 import kdtree
 
 ##ulazni podaci
