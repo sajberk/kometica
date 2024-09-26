@@ -21,11 +21,8 @@ comet_coords, star_coords, obs_coords, obs_view_vec = geom.translate_points(come
 star_coords, obs_coords, obs_view_vec = geom.rotate_to_negative_x_axis(star_coords, obs_coords, obs_view_vec)
 ray = geom.Ray(obs_coords, obs_view_vec)
 
-#ovde umetni transformacije tkd kometa bude u (0 0 0) a zvezdica na negativnom delu x ose 
-#potrebne dve rotacije, jedna u y-z ravni (da bi se dovela zvezda u x-y ravan) i jedna u x-y ravni da se dovede na x osu 
-#Finding parameter limits
-#tj samo gledamo jel prolazimo celu max_dist sferu ili idemo od max_dist do kometice
-# KD BLEJA ############
+# vizualizacija
+plot_simulation(star_coords, obs_coords, obs_view_vec, comet_coords, comet_radius)
 
 # dummy tačke, biće ih milijardu al generisemo drvo
 seed = 1245780
@@ -49,12 +46,6 @@ r = 30 # oko svake od tačaka na vektoru pogleda
 results = sphere_tree.query(points_on_the_vector_to_sample, r)
 print(results)
 exit()
-############ KD BLEJA ###########
-
-
-# da ga vidimo
-#plot_simulation(star_coords, obs_coords, obs_view_vec, comet_coords, comet_radius)
-
 
 
 ##testici da vidim jel radi :) 
