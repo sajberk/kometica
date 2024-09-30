@@ -6,7 +6,7 @@ import kdtree
 from numpy.random import default_rng
 
 
-num_of_particles = int(1e7) #broj cestica
+num_of_particles = int(1e6) #broj cestica
 cloud_radius = 50e3
 nucleus_radius = 2e3
 
@@ -24,27 +24,25 @@ ray = geom.Ray(obs_coords, obs_view_vec)
 # vizualizacija
 plot_simulation(star_coords, obs_coords, obs_view_vec, comet_coords, comet_radius)
 
-# dummy tačke, biće ih milijardu al generisemo drvo
-seed = 1245780
-generated_points = kdtree.generate_triplets(num_of_particles, cloud_radius, nucleus_radius, seed)
-sphere_tree = kdtree.SphereKDTree(points=generated_points)
-
 intersections = ray.sphere_intersection(comet_coords, cloud_radius)
 if(isinstance(intersections, float) and np.isnan(intersections)):
     print(":(")
     exit()
 
-# ovo dole ima preseke
-#ray = geom.Ray([0,0,0], [12,12,12])
-#intersections = ray.sphere_intersection([23,12,98], 100)
+# dummy tačke, biće ih milijardu al generisemo drvo
+print("Počinjem generisanje")
+seed = 1245780
+generated_points = kdtree.generate_triplets(num_of_particles, cloud_radius, nucleus_radius, seed)
+sphere_tree = kdtree.SphereKDTree(points=generated_points)
+
 
 intersection_length = np.linalg.norm((ray.parametric(intersections[0]), ray.parametric(intersections[1])))
 points_on_the_vector_to_sample = np.linspace(ray.parametric(intersections[0]), ray.parametric(intersections[1]), int(intersection_length/2))
 
-
+print("Počinjem pretragu")
 r = 30 # oko svake od tačaka na vektoru pogleda
 results = sphere_tree.query(points_on_the_vector_to_sample, r)
-print(results)
+print(f"Pronadjeno tačaka: {results}")
 exit()
 
 

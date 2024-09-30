@@ -19,7 +19,7 @@ class Ray:
         C = (self.start[0] - center[0])**2 + (self.start[1] - center[1])**2 + (self.start[2] - center[2])**2 - radius**2
         discriminant = B**2 - 4*A*C
         
-        print(A, B, C, discriminant)
+        #print(A, B, C, discriminant)
         if(discriminant <= 0):
             return np.nan
         else:

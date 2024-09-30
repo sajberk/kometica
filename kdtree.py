@@ -43,7 +43,12 @@ def generate_triplets(size, r1, r2, seed = 1234):
             r = (r1**3 * rng.random())**(1/3)
             if r < r2:
                 continue
-            theta = rng.uniform(0, 2 * np.pi)
+            
+            if rng.random() < 0.9: 
+                theta = rng.uniform(np.pi / 2, 3 * np.pi / 2) 
+            else:
+                theta = rng.uniform(-np.pi / 2, np.pi / 2) 
+
             phi = np.arccos(2 * rng.random() - 1)
             x = r * np.sin(phi) * np.cos(theta)
             y = r * np.sin(phi) * np.sin(theta)
