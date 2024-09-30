@@ -13,6 +13,7 @@ class SphereKDTree:
 
     def query(self, point, radius):
         res = self.tree.query_ball_point(point, radius, workers = -1)
+
         count = 0
         for r in res:
             count += len(r)

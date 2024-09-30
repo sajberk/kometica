@@ -21,7 +21,7 @@ def set_axes_equal(ax):
     ax.set_ylim3d([y_middle - max_range/2, y_middle + max_range/2])
     ax.set_zlim3d([z_middle - max_range/2, z_middle + max_range/2])
 
-def plot_simulation(star_coords, obs_coords, obs_view_vec, comet_coords, comet_radius):
+def plot_simulation(star_coords, obs_coords, obs_view_vec, comet_coords, comet_radius, dust_points):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
@@ -32,7 +32,10 @@ def plot_simulation(star_coords, obs_coords, obs_view_vec, comet_coords, comet_r
 
     ax.scatter(comet_coords[0], comet_coords[1], comet_coords[2], color='red', s=100, label='Comet')
 
-    ax.plot([obs_coords[0], obs_view_vec[0]], [obs_coords[1], obs_view_vec[1]], [obs_coords[2], obs_view_vec[2]], linewidth=2)
+    for dust in dust_points:
+        ax.scatter(dust[0], dust[1], dust[2], color="grey", s=10)
+
+    ax.plot([obs_coords[0], obs_coords[0] + 2*obs_view_vec[0]], [obs_coords[1], obs_coords[1] + 2*obs_view_vec[1]], [obs_coords[2], obs_coords[2] + 2*obs_view_vec[2]], linewidth=2)
 
 
     # kometica 3d sfera
